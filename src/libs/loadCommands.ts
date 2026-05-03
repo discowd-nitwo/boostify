@@ -10,6 +10,7 @@ import {
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
+import { logger } from "./logger.js";
 
 export interface Command {
   data:
@@ -51,4 +52,5 @@ export async function loadCommands(
   await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
     body: commandData,
   });
+  logger.deploy(`Commands deployed!`)
 }

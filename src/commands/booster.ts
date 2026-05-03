@@ -3,8 +3,9 @@ import {
   ChatInputCommandInteraction,
   EmbedBuilder,
   PermissionFlagsBits,
+  MessageFlags,
 } from "discord.js";
-import { Command } from "../libs/loadCommands";
+import { Command } from "../libs/loadCommands.js";
 import {
   getBooster,
   addBoostCount,
@@ -13,7 +14,7 @@ import {
   getActiveBoosters,
   getTotalBoosts,
   registerBoost,
-} from "../services/boosterService";
+} from "../services/boosterService.js";
 
 const boosterCommand: Command = {
   data: new SlashCommandBuilder()
@@ -72,7 +73,7 @@ const boosterCommand: Command = {
       if (!record) {
         await interaction.reply({
           content: `No booster record found for ${user.tag}.`,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -90,7 +91,7 @@ const boosterCommand: Command = {
         )
         .setTimestamp();
 
-      await interaction.reply({ embeds: [embed], ephemeral: true });
+      await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
       return;
     }
 
@@ -105,13 +106,13 @@ const boosterCommand: Command = {
 
       const updated = addBoostCount(user.id, amount);
       if (!updated) {
-        await interaction.reply({ content: "Failed to update boost count.", ephemeral: true });
+        await interaction.reply({ content: "Failed to update boost count.", flags: MessageFlags.Ephemeral });
         return;
       }
 
       await interaction.reply({
         content: `Added ${amount} boost(s) to ${user.tag}. New count: ${updated.boostCount}.`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -122,13 +123,13 @@ const boosterCommand: Command = {
 
       const updated = removeBoostCount(user.id, amount);
       if (!updated) {
-        await interaction.reply({ content: `No booster record found for ${user.tag}.`, ephemeral: true });
+        await interaction.reply({ content: `No booster record found for ${user.tag}.`, flags: MessageFlags.Ephemeral });
         return;
       }
 
       await interaction.reply({
         content: `Removed ${amount} boost(s) from ${user.tag}. New count: ${updated.boostCount}.`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }

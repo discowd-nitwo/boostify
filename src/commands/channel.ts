@@ -1,10 +1,11 @@
 import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
+  MessageFlags,
 } from "discord.js";
-import { Command } from "../libs/loadCommands";
-import { getBooster } from "../services/boosterService";
-import { createPrivateChannel, deletePrivateChannel } from "../services/channelService";
+import { Command } from "../libs/loadCommands.js";
+import { getBooster } from "../services/boosterService.js";
+import { createPrivateChannel, deletePrivateChannel } from "../services/channelService.js";
 
 const channelCommand: Command = {
   data: new SlashCommandBuilder()
@@ -23,7 +24,7 @@ const channelCommand: Command = {
     if (!record?.boosting) {
       await interaction.reply({
         content: "You must be an active booster to use this command.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -38,13 +39,13 @@ const channelCommand: Command = {
         if (existing) {
           await interaction.reply({
             content: `You already have a private channel: <#${record.privateChannelId}>`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
           return;
         }
       }
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const channel = await createPrivateChannel(guild, member);
       await interaction.editReply(`Private channel created: <#${channel.id}>`);
@@ -55,12 +56,12 @@ const channelCommand: Command = {
       if (!record.privateChannelId) {
         await interaction.reply({
           content: "You do not have a private channel.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
       await deletePrivateChannel(guild, interaction.user.id);
       await interaction.editReply("Private channel deleted.");
       return;

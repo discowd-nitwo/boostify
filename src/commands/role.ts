@@ -1,16 +1,15 @@
 import {
   SlashCommandBuilder,
-  ChatInputCommandInteraction,
-  PermissionFlagsBits,
-  ColorResolvable,
+  ChatInputCommandInteraction, ColorResolvable,
+  MessageFlags
 } from "discord.js";
-import { Command } from "../libs/loadCommands";
-import { getBooster } from "../services/boosterService";
+import { Command } from "../libs/loadCommands.js";
+import { getBooster } from "../services/boosterService.js";
 import {
   createCustomRole,
   updateCustomRole,
   deleteCustomRole,
-} from "../services/roleService";
+} from "../services/roleService.js";
 
 const roleCommand: Command = {
   data: new SlashCommandBuilder()
@@ -48,7 +47,7 @@ const roleCommand: Command = {
     if (!record?.boosting) {
       await interaction.reply({
         content: "You must be an active booster to use this command.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -61,7 +60,7 @@ const roleCommand: Command = {
       if (record.customRoleId) {
         await interaction.reply({
           content: "You already have a custom role. Use /role edit to modify it.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -72,12 +71,12 @@ const roleCommand: Command = {
       if (!/^#[0-9a-fA-F]{6}$/.test(color)) {
         await interaction.reply({
           content: "Invalid color. Please use a hex color like #ff0000.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const role = await createCustomRole(guild, member, name, color as ColorResolvable);
 
@@ -89,7 +88,7 @@ const roleCommand: Command = {
       if (!record.customRoleId) {
         await interaction.reply({
           content: "You do not have a custom role. Use /role create first.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -100,12 +99,12 @@ const roleCommand: Command = {
       if (color && !/^#[0-9a-fA-F]{6}$/.test(color as string)) {
         await interaction.reply({
           content: "Invalid color. Please use a hex color like #ff0000.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const role = await updateCustomRole(guild, interaction.user.id, name, color);
       if (!role) {
@@ -121,12 +120,12 @@ const roleCommand: Command = {
       if (!record.customRoleId) {
         await interaction.reply({
           content: "You do not have a custom role.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
       await deleteCustomRole(guild, interaction.user.id);
       await interaction.editReply("Custom role deleted.");
       return;
